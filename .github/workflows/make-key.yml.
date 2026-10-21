@@ -1,0 +1,22 @@
+name: Generate Keystore
+on: workflow_dispatch
+jobs:
+  make-key:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Create Keystore & Base64 Text
+        run: |
+          keytool -genkeypair -v -keystore lunchmate-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias lunchmate -storepass MySecretPass123 -keypass 21Dagim22Bireda22# -dname "CN=Dagim Bireda, OU=Lilo Designs, O=Lilo Designs, L=Addis Ababa, ST=Addis Ababa, C=ET"
+          base64 -w 0 lunchmate-release.jks > KEYSTORE_BASE64.txt
+      - name: Upload Key Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: My-Secret-Key-Files
+          path: |
+            lunchmate-release.jks
+            KEYSTORE_BASE64.txt
